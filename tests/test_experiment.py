@@ -61,9 +61,12 @@ def test_experiment_mart_reconciles_assignment_and_outcome_grains() -> None:
 
     assignment_count = connection.execute("select count(*) from fact_assignment").fetchone()[0]
     outcome_count = connection.execute("select count(*) from fact_outcome").fetchone()[0]
-    mart_count = connection.execute("select sum(assigned_users) from mart_experiment_variant").fetchone()[0]
+    mart_count = connection.execute(
+        "select sum(assigned_users) from mart_experiment_variant"
+    ).fetchone()[0]
     invalid_rates = connection.execute(
-        "select count(*) from mart_experiment_variant where conversion_rate < 0 or conversion_rate > 1"
+        "select count(*) from mart_experiment_variant "
+        "where conversion_rate < 0 or conversion_rate > 1"
     ).fetchone()[0]
 
     assert assignment_count == 1200
