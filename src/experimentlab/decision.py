@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal
 
 
-Decision = Literal["ship", "hold", "do_not_ship"]
+Decision = str
 
 
 @dataclass(frozen=True)
@@ -52,7 +51,10 @@ def decide_experiment(inputs: ExperimentDecisionInput) -> ExperimentDecision:
             decision="hold",
             reasons=(
                 "Assignment integrity failed the Sample Ratio Mismatch gate.",
-                "Treatment-effect estimates are not used for shipping while randomization is suspect.",
+                (
+                    "Treatment-effect estimates are not used for shipping while "
+                    "randomization is suspect."
+                ),
             ),
         )
 
