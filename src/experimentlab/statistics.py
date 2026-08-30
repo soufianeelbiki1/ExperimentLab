@@ -41,10 +41,9 @@ def sample_ratio_mismatch(
     total = control_n + treatment_n
     expected_treatment = total * expected_treatment_share
     expected_control = total - expected_treatment
-    chi_square = (
-        (treatment_n - expected_treatment) ** 2 / expected_treatment
-        + (control_n - expected_control) ** 2 / expected_control
-    )
+    chi_square = (treatment_n - expected_treatment) ** 2 / expected_treatment + (
+        control_n - expected_control
+    ) ** 2 / expected_control
     p_value = erfc(sqrt(chi_square / 2.0))
     observed_share = treatment_n / total
     return SrmResult(
