@@ -117,27 +117,33 @@ def build_report_html(connection: duckdb.DuckDBPyConnection) -> str:
     )
 
     control_revenue = np.asarray(
-        [row[0] for row in connection.execute(
-            """
-            select o.revenue
-            from fact_assignment a
-            join fact_outcome o using (user_id, experiment_id)
-            where a.variant = 'control'
-            order by a.user_id
-            """
-        ).fetchall()],
+        [
+            row[0]
+            for row in connection.execute(
+                """
+                select o.revenue
+                from fact_assignment a
+                join fact_outcome o using (user_id, experiment_id)
+                where a.variant = 'control'
+                order by a.user_id
+                """
+            ).fetchall()
+        ],
         dtype=float,
     )
     treatment_revenue = np.asarray(
-        [row[0] for row in connection.execute(
-            """
-            select o.revenue
-            from fact_assignment a
-            join fact_outcome o using (user_id, experiment_id)
-            where a.variant = 'treatment'
-            order by a.user_id
-            """
-        ).fetchall()],
+        [
+            row[0]
+            for row in connection.execute(
+                """
+                select o.revenue
+                from fact_assignment a
+                join fact_outcome o using (user_id, experiment_id)
+                where a.variant = 'treatment'
+                order by a.user_id
+                """
+            ).fetchall()
+        ],
         dtype=float,
     )
     revenue = bootstrap_mean_difference(
@@ -188,11 +194,15 @@ def build_report_html(connection: duckdb.DuckDBPyConnection) -> str:
   </p>
 </header>
 <section class="cards">
-  <div class="card"><span>Control conversion</span><strong>{_pct(conversion.control_rate)}</strong></div>
+  <div class="card">
+    <span>Control conversion</span><strong>{_pct(conversion.control_rate)}</strong>
+  </div>
   <div class="card">
     <span>Treatment conversion</span><strong>{_pct(conversion.treatment_rate)}</strong>
   </div>
-  <div class="card"><span>Absolute lift</span><strong>{_pct(conversion.absolute_lift)}</strong></div>
+  <div class="card">
+    <span>Absolute lift</span><strong>{_pct(conversion.absolute_lift)}</strong>
+  </div>
   <div class="card"><span>SRM p-value</span><strong>{srm.p_value:.3f}</strong></div>
 </section>
 <section class="grid">
