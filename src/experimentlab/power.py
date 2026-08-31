@@ -43,11 +43,7 @@ def required_sample_size_per_arm(
     pooled = (baseline_rate + target_rate) / 2
     numerator = (
         z_alpha * sqrt(2 * pooled * (1 - pooled))
-        + z_power
-        * sqrt(
-            baseline_rate * (1 - baseline_rate)
-            + target_rate * (1 - target_rate)
-        )
+        + z_power * sqrt(baseline_rate * (1 - baseline_rate) + target_rate * (1 - target_rate))
     ) ** 2
     sample_size = ceil(numerator / (absolute_mde**2))
     relative_mde = absolute_mde / baseline_rate if baseline_rate else None
