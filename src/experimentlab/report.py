@@ -208,7 +208,7 @@ def build_report_html(connection: duckdb.DuckDBPyConnection) -> str:
 <section class="grid">
   <article class="panel decision decision-{decision.decision}">
     <h2>Decision</h2>
-    <strong>{decision.decision.replace('_', ' ')}</strong>
+    <strong>{decision.decision.replace("_", " ")}</strong>
     <ul>{reasons}</ul>
   </article>
   <article class="panel">
