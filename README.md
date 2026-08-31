@@ -2,7 +2,7 @@
 
 Product analytics and experimentation engineering portfolio for rigorous, decision-oriented A/B testing.
 
-ExperimentLab is built to show Data Analyst and Data Scientist capability beyond p-values: event modeling, assignment integrity, funnels, retention, SRM detection, confidence intervals, business guardrails, variance reduction, and explicit ship/no-ship reasoning.
+ExperimentLab is built to show Data Analyst and Data Scientist capability beyond p-values: event modeling, assignment integrity, funnels, retention, SRM detection, confidence intervals, business guardrails, variance reduction, power planning, and explicit ship/no-ship reasoning.
 
 ## What is implemented
 
@@ -12,17 +12,26 @@ ExperimentLab is built to show Data Analyst and Data Scientist capability beyond
 - Sample Ratio Mismatch test as a validity gate before treatment-effect interpretation.
 - Two-proportion estimator with absolute lift, relative lift, z-test p-value, and 95% confidence interval.
 - CUPED adjustment using a pre-treatment covariate.
-- Regression tests for assignment balance, SRM detection, effect estimation, CUPED variance reduction, and warehouse reconciliation.
+- Deterministic bootstrap interval for skewed outcome differences.
+- Explicit experiment `ship` / `hold` / `do_not_ship` decision policy with guardrails.
+- Two-sided proportion power planning for equal-allocation experiments.
+- Minimum detectable effect calculation from an available per-arm sample budget.
+- Regression tests for assignment balance, SRM detection, effect estimation, CUPED variance reduction, power/MDE behavior, decision policy, and warehouse reconciliation.
 - Python 3.11/3.12 CI with Ruff and pytest.
 
 ## Analytical workflow
 
 1. Validate assignment integrity with SRM.
 2. Confirm experiment and outcome grains reconcile.
-3. Measure effect size and uncertainty.
-4. Apply variance reduction only with valid pre-treatment covariates.
-5. Check guardrails before making a product decision.
-6. Separate statistical evidence from business impact and recommendation.
+3. Pre-plan sample size from baseline conversion, MDE, alpha, and desired power.
+4. Measure effect size and uncertainty.
+5. Apply variance reduction only with valid pre-treatment covariates.
+6. Check guardrails before making a product decision.
+7. Separate statistical evidence from business impact and recommendation.
+
+## Power-planning boundary
+
+The power utilities use a standard normal approximation for two independent proportions and assume equal allocation, a fixed-horizon analysis, and the declared baseline rate. They are planning tools, not guarantees of realized power when assumptions are violated, traffic composition changes, or repeated sequential looks are performed.
 
 ## Run locally
 
@@ -31,6 +40,16 @@ python -m pip install -e '.[dev]'
 ruff check .
 ruff format --check .
 pytest -q
+```
+
+```python
+from experimentlab import minimum_detectable_effect, required_sample_size_per_arm
+
+plan = required_sample_size_per_arm(0.10, 0.015, power=0.80)
+print(plan.sample_size_per_arm)
+
+mde = minimum_detectable_effect(0.10, sample_size_per_arm=20_000)
+print(mde.absolute_mde)
 ```
 
 ## Data truthfulness
@@ -42,8 +61,7 @@ See `PROJECT_CONTEXT.md` for the next slice and analytical guardrails.
 ## Next
 
 - Funnel event schema and retention cohorts.
-- Bootstrap confidence intervals for skewed revenue metrics.
-- Power and minimum-detectable-effect utilities.
-- Explicit primary + guardrail decision rules.
-- Reproducible `ship` / `hold` / `do_not_ship` decision memo.
-- Sequential-look and multiple-testing demonstrations.
+- Sequential-look caveat demonstration and alpha-spending discussion.
+- Multiple-testing awareness across secondary metrics.
+- Experiment decision memo generated from warehouse outputs.
+- Heterogeneous treatment-effect exploration only where sample size and pre-specification justify it.
